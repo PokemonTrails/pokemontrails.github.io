@@ -1,12 +1,124 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <img src="/assets/images/pkmn/all/001.png" alt="">
-</body>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Pokémon Trails is a new web-browser Pokémon game. Choose your trainer and your first Pokémon, then jump into an infinite, random adventure.">
+        <title>Pokémon Trails - Welcome to your new Pokémon Adventure!</title>
+        <link rel="stylesheet" href="./styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="landingContainer">
+            <section class="landingTitle">
+                <div class="bg-clouds"></div>
+                <div class="landingCenteredContent">
+                    <h1>Welcome to <span>Pokémon Trails</span></h1>
+                    <img class="main no-select no-pointer" src="https://pokemontrails.github.io/assets/images/icons/logos/logo_trails_small.png" alt="Pokémon Trails">
+                    <div class="introPkmn" aria-label="A trainer and Pokémon">
+                        <div class="animated-sprite pokemon bottom js-intro-pokemon" aria-hidden="true"></div>
+                        <div class="animated-sprite trainer bottom js-intro-trainer" aria-hidden="true"></div>
+                    </div>
+                    <a href="https://github.com/PokemonTrails/PokemonTrailsOffline/tree/main" class="login btn btn-primary">Download</a>
+                </div>
+                <div class="arrow-down js-scroll-down" aria-label="Scroll down"></div>
+            </section>
+
+            <section class="landingMsg">
+                <img loading="lazy" class="js-pokeball pokeball" src="https://pokemontrails.github.io/assets/images/icons/partyBall.png" alt="Poké Ball">
+                <h2>Discover a <strong>new Pokémon adventure</strong> in this <strong>infinite and random</strong> region!</h2>
+            </section>
+
+            <section class="landingTrainerPartner">
+                <h3><strong>Choose</strong> your trainer</h3>
+                <div class="charactersRunning js-trainer-row" data-direction="right" aria-label="Trainers"></div>
+                <div class="charactersRunning secondRow js-trainer-row" data-direction="left" aria-label="More trainers"></div>
+                <h3>And your <strong>first Pokémon!</strong></h3>
+                <div class="charactersRunning js-pokemon-row" data-direction="right" aria-label="Starter Pokémon"></div>
+                <div class="charactersRunning secondRow js-pokemon-row" data-direction="left" aria-label="More starter Pokémon"></div>
+            </section>
+
+
+            <section class="landingDiscord">
+                <a href="https://discord.gg/xzaFqWkKMW" target="_blank" rel="noopener noreferrer" class="discordLink">
+                    <h3>Welcome to the family</h3>
+                    <p>Our community is growing and we would be delighted to have your feedback to make further in-game related improvements</p>
+                    <span class="goToDiscord">Join our discord</span>
+                </a>
+            </section>
+        </div>
+
+        <div class="arrow-up js-arrow-up" aria-label="Scroll to top"></div>
+
+        <script>
+            (() => {
+                const assetBase = "https://pokemontrails.github.io/assets/images/";
+                const starterPokemon = [1, 4, 7, 152, 155, 158, 252, 255, 258, 387, 390, 393, 495, 498, 501, 650, 653, 656, 722, 725, 728];
+                const trainerIds = [1, 2, 3, 5, 6, 7, 11, 16, 17, 18, 19, 24, 25, 27, 29, 31, 33, 34, 41, 42, 47, 48];
+                const introPokemonIds = [...starterPokemon, 25, 133, 54, 58, 60, 104, 109, 120, 123, 239, 240, 129, 183, 194, 198, 216, 222, 270, 280, 285, 296, 311, 312, 355, 359, 361, 396, 403, 443, 446, 447, 459];
+                const pokemonImage = (id) => `${assetBase}pkmn/all/${String(id).padStart(3, "0")}.png`;
+
+                const introPokemon = document.querySelector(".js-intro-pokemon");
+                const introTrainer = document.querySelector(".js-intro-trainer");
+                introPokemon.style.backgroundImage = `url("${pokemonImage(introPokemonIds[Math.floor(Math.random() * introPokemonIds.length)])}")`;
+                introTrainer.style.backgroundImage = `url("${assetBase}trainers/${trainerIds[Math.floor(Math.random() * trainerIds.length)]}/sprite.png")`;
+
+                document.querySelectorAll(".js-trainer-row").forEach((row) => {
+                    const direction = row.dataset.direction;
+                    trainerIds.forEach((id) => {
+                        const trainer = document.createElement("div");
+                        trainer.className = `animated-sprite trainer ${direction} medium`;
+                        trainer.style.backgroundImage = `url("${assetBase}trainers/${id}/sprite.png")`;
+                        trainer.setAttribute("aria-hidden", "true");
+                        row.append(trainer);
+                    });
+                });
+
+                document.querySelectorAll(".js-pokemon-row").forEach((row, rowIndex) => {
+                    const pokemonIds = rowIndex === 0 ? starterPokemon.slice(0, 11) : starterPokemon.slice(11);
+                    const direction = row.dataset.direction;
+                    pokemonIds.forEach((id) => {
+                        const pokemon = document.createElement("div");
+                        pokemon.className = `animated-sprite pokemon ${direction} sticker`;
+                        pokemon.dataset.evo = "0";
+                        pokemon.dataset.num = String(id);
+                        pokemon.style.backgroundImage = `url("${pokemonImage(id)}")`;
+                        pokemon.setAttribute("aria-hidden", "true");
+                        row.append(pokemon);
+                    });
+                });
+
+                const pokeball = document.querySelector(".js-pokeball");
+                const scrollUp = document.querySelector(".js-arrow-up");
+                const scrollDown = document.querySelector(".js-scroll-down");
+                const breakpoint = document.querySelector(".landingMsg").offsetTop;
+
+                window.addEventListener("scroll", () => {
+                    const pageTop = document.body.getBoundingClientRect().top;
+                    pokeball.style.transform = `rotate(${pageTop}deg)`;
+                    scrollUp.classList.toggle("visible", -pageTop >= breakpoint);
+                });
+                scrollDown.addEventListener("click", () => window.scrollTo({ top: breakpoint, behavior: "smooth" }));
+                scrollUp.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+                const evolvePokemon = () => {
+                    document.querySelectorAll(".animated-sprite.pokemon[data-evo]").forEach((pokemon) => {
+                        let id = Number.parseInt(pokemon.dataset.num, 10);
+                        const stage = Number.parseInt(pokemon.dataset.evo, 10);
+                        if (!Number.isFinite(id) || ![0, 1, 2].includes(stage)) {
+                            return;
+                        }
+                        if (stage < 2) {
+                            id += stage + 1;
+                        }
+                        pokemon.dataset.evo = String((stage + 1) % 3);
+                        pokemon.style.backgroundImage = `url("${pokemonImage(id)}")`;
+                    });
+                };
+                window.setInterval(evolvePokemon, 2000);
+            })();
+        </script>
+    </body>
 </html>
